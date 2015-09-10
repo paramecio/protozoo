@@ -121,7 +121,7 @@ function LaunchConsole()
 		exit(1);
 	
 	}
-	
+	/*
 	if(getenv('SSH_AGENT_PID')===false)
 	{
         $climate->white()->bold()->out('Loading SSH-Agent');
@@ -141,14 +141,14 @@ function LaunchConsole()
             echo $e->getMessage();
         }
     
-    }
+    }*/
 	//Execute agent
 	
 	//Add key
 	
 	//Preparing SSH2
 	
-	//$key=check_password_key(ConfigProto::$password_key, $climate, $num_repeat=0);
+	$key=check_password_key(ConfigProto::$password_key, $climate, $num_repeat=0);
 	/*
 	if(isset($options['servers']))
 	{
@@ -578,39 +578,76 @@ function check_password_key($password, $climate, $num_repeat=0)
 {
 	$key = new \phpseclib\Crypt\RSA();
 	
-	$key->setPassword($password);
-	
 	try {
-        echo 'load key';
-        $key->loadKey(file_get_contents(ConfigProto::$private_key));
+        
+        $key->setPassword($password);
+        
+        if(!($file_key=file_get_contents(ConfigProto::$private_key)))
+        {
+			$climate->white()->backgroundRed()->out("Error: RSA key not exists");
+			exit(1);
+        
+        }
+        
+        
+        if(!$key->loadKey($file_key))
+        {
+        
+			$key=check_password_key('', $climate, $num_repeat);
+			
+        }
 	
 	}
 	catch(Exception $e) {
         
-        if($num_repeat<3 && PHP_OS=='Linux')
+        if($num_repeat<3)
         {
-    
+			//echo $e->getMessage();
             //Horrible hack for obtain password in UNIX/Linux
     
-            $fh = fopen('php://stdin','r');
-            
-            echo 'Password: ';
-            
-            `/bin/stty -echo`;
-            
-            $password = rtrim(fgets($fh,64));
-            
-            `/bin/stty echo`;
-            
-            print "\n";
+			switch(PHP_OS)
+			{
+			
+				case 'Linux':
+    
+					$fh = fopen('php://stdin','r');
+					
+					echo 'Password: ';
+					
+					`/bin/stty -echo`;
+					
+					$password = rtrim(fgets($fh,64));
+					
+					`/bin/stty echo`;
+					
+					print "\n";
 
-            // nothing more to read from the keyboard
-            fclose($fh);
-            
+					// nothing more to read from the keyboard
+					fclose($fh);
+				break;
+				
+				case 'FreeBSD':
+				
+					$fh = fopen('php://stdin','r');
+					
+					echo 'Password: ';
+					
+					`/usr/bin/stty -echo`;
+					
+					$password = rtrim(fgets($fh,64));
+					
+					`/usr/bin/stty echo`;
+					
+					print "\n";
+
+					// nothing more to read from the keyboard
+					fclose($fh);
+				
+				break;
+			}
+			
             $num_repeat+=1;
             
-            echo $e->getMessage();
-            echo 'New password:'.$password;
             $key=check_password_key($password, $climate, $num_repeat);
             
         }
