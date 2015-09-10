@@ -1,0 +1,17 @@
+<?php
+
+ConfigProto::$password_key='';
+
+// The username used in remote servers. This user need to be configured for use sudo without password
+
+ConfigProto::$user_ssh='usersample';
+
+// The home of remote user
+
+ConfigProto::$home_ssh='/home/usersample';
+
+ConfigProto::$server_tmp=ConfigProto::$home_ssh.'/tmp';
+
+ConfigProto::$exit_if_error=0;
+
+?>

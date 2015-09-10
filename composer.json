@@ -1,0 +1,37 @@
+{
+    "name": "phangoapp\/protozoo",
+    "description": "A system for make tasks in servers via ssh",
+    "license": "GPL",
+    "authors": [
+        {
+            "name": "Antonio de la Rosa",
+            "email": "webmaster@web-t-sys.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "git@github.com:phangoapp\/phamodels.git"
+        },
+        {
+            "type": "vcs",
+            "url": "git@github.com:phangoapp\/phautils.git"
+        },
+	{ 
+            "type": "vcs",
+            "url": "git@github.com:phangoapp\/pharouter.git"
+        }
+    ],
+    "require": {
+        "phangoapp\/phamodels": "dev-master",
+        "phangoapp\/phautils": "dev-master",
+	"phangoapp\/pharouter": "dev-master",
+        "ext-libxml": "*",
+	"ext-pcntl": "*",
+        "league\/climate": "^3.2",
+        "phpseclib/phpseclib": "dev-master",
+        "monolog/monolog": "^1.16@dev",
+        "symfony/process": "^3.0@dev"
+    }
+}
