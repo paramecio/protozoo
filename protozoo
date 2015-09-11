@@ -30,7 +30,9 @@ function LaunchConsole()
 
 	include(__DIR__.'/libraries/configproto.php');
 
-	$options=getopt('', $arr_opts=array('task:', 'resume:', 'profile:', 'json::'));
+	//'resume:'
+	
+	$options=getopt('', $arr_opts=array('task:', 'profile:'));
 	
 	$climate=new League\CLImate\CLImate;
 	
@@ -40,18 +42,6 @@ function LaunchConsole()
 		$climate->white()->backgroundBlack()->out("Use: protozoo --task=folder_task [--resume] [--profile=profile_name] [--json]");
 		
 		die;
-	
-	}
-	
-	if(isset($options['json']))
-	{
-	
-		function show_message($message)
-		{
-		
-			
-		
-		}
 	
 	}
 	
