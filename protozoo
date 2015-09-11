@@ -30,16 +30,28 @@ function LaunchConsole()
 
 	include(__DIR__.'/libraries/configproto.php');
 
-	$options=getopt('', $arr_opts=array('task:', 'resume:', 'profile:'));
+	$options=getopt('', $arr_opts=array('task:', 'resume:', 'profile:', 'json::'));
 	
 	$climate=new League\CLImate\CLImate;
 	
 	if(!isset($options['task']))
 	{
 		
-		$climate->white()->backgroundBlack()->out("Use: protozoo --task=folder_task [--resume] [--profile=profile_name]");
+		$climate->white()->backgroundBlack()->out("Use: protozoo --task=folder_task [--resume] [--profile=profile_name] [--json]");
 		
 		die;
+	
+	}
+	
+	if(isset($options['json']))
+	{
+	
+		function show_message($message)
+		{
+		
+			
+		
+		}
 	
 	}
 	
@@ -301,6 +313,8 @@ function exec_tasks($options, $host, $data_host, $key, $climate)
 	$sftp = new \phpseclib\Net\SFTP($host);
 	
 	$ssh=&$sftp;
+	
+	//$ssh->enablePTY(); 
 
 	if (!$ssh->login(ConfigProto::$user_ssh, $key)) {
 	
@@ -427,8 +441,17 @@ function exec_tasks($options, $host, $data_host, $key, $climate)
 		$command=$script_config['script_interpreter'].' '.$script_to_execute.$parameters;
 
 		//Execute command
+		//$ssh->enablePTY(); 
 		
 		$ssh->exec($command, 'packet_handler');
+		
+		/*while($output=$ssh->read())
+		{
+		
+			//echo $output;
+			ConfigProto::$logger->addInfo($output);
+		
+		}*/
 		
 		if($ssh->getExitStatus()>0)
 		{
@@ -600,7 +623,7 @@ function check_password_key($password, $climate, $num_repeat=0)
 	}
 	catch(Exception $e) {
         
-        if($num_repeat<3)
+        if($num_repeat<3 && (PHP_OS=='Linux' || PHP_OS=='FreeBSD' || PHP_OS=='Darwin'))
         {
 			//echo $e->getMessage();
             //Horrible hack for obtain password in UNIX/Linux
@@ -626,7 +649,30 @@ function check_password_key($password, $climate, $num_repeat=0)
 					fclose($fh);
 				break;
 				
+				# Not tested
+				
 				case 'FreeBSD':
+				
+					$fh = fopen('php://stdin','r');
+					
+					echo 'Password: ';
+					
+					`/usr/bin/stty -echo`;
+					
+					$password = rtrim(fgets($fh,64));
+					
+					`/usr/bin/stty echo`;
+					
+					print "\n";
+
+					// nothing more to read from the keyboard
+					fclose($fh);
+				
+				break;
+				
+				# Not tested
+				
+				case 'Darwin':
 				
 					$fh = fopen('php://stdin','r');
 					
@@ -661,46 +707,6 @@ function check_password_key($password, $climate, $num_repeat=0)
         }
 	
 	}
-	
-	/*
-	if(!$key->loadKey(file_get_contents(ConfigProto::$private_key)))
-	{
-	
-		if($num_repeat<3 && PHP_OS=='LINUX')
-		{
-	
-			//Horrible hack for obtain password in UNIX/Linux
-	
-			$fh = fopen('php://stdin','r');
-			
-			echo 'Password: ';
-			
-			`/bin/stty -echo`;
-			
-			$password = rtrim(fgets($fh,64));
-			
-			`/bin/stty echo`;
-			
-			print "\n";
-
-			// nothing more to read from the keyboard
-			fclose($fh);
-			
-			$num_repeat+=1;
-			
-			$key=check_password_key($password, $climate, $num_repeat);
-			
-		}
-		else
-		{
-		
-			$climate->white()->backgroundRed()->out("Error, check the password of your ssh key");
-			
-			exit(1);
-		
-		}
-	
-	}*/
 	
 	return $key;
 

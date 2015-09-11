@@ -29,10 +29,10 @@
 	"phangoapp\/pharouter": "dev-master",
         "ext-libxml": "*",
 	"ext-pcntl": "*",
-	"ext-libsodium":"*",
         "league\/climate": "^3.2",
         "phpseclib/phpseclib": "dev-master",
         "monolog/monolog": "^1.16@dev",
         "symfony/process": "^3.0@dev"
-    }
+    },
+    "bin": ["protozoo"]
 }
