@@ -123,27 +123,7 @@ function LaunchConsole()
 		exit(1);
 	
 	}
-	/*
-	if(getenv('SSH_AGENT_PID')===false)
-	{
-        $climate->white()->bold()->out('Loading SSH-Agent');
-    }
-    else
-    {
-    
-        $climate->white()->bold()->out('SSH-Agent is running. Loading ssh-add...');
-        
-        $process_ssh_add=new Process('ssh-add');
-        
-        try {
-            $process_ssh_add->mustRun();
 
-            echo $process_ssh_add>getOutput();
-        } catch (ProcessFailedException $e) {
-            echo $e->getMessage();
-        }
-    
-    }*/
 	//Execute agent
 	
 	//Add key
